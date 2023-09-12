@@ -2,6 +2,10 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_NoRecoil.h"
+# include <iostream>
+# include <Windows.h>
+# include <thread>
+# include <chrono>
 
 class NoRecoil : public QMainWindow
 {
@@ -10,7 +14,17 @@ class NoRecoil : public QMainWindow
 public:
     NoRecoil(QWidget *parent = nullptr);
     ~NoRecoil();
+	void DetectSpeedChange(double);
+	
+	void ChangeSpeed(double);
+	
+	
 
 private:
     Ui::NoRecoilClass ui;
+
+public slots:
+	unsigned int ChangeSpeedButtonClicked();
 };
+
+void MoveMouse(double);
