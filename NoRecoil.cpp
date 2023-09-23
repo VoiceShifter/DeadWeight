@@ -2,33 +2,49 @@
 
 std::atomic<bool> StopThread(false);
 std::thread MovingMouseThread;
+LPPOINT CursorCoodinates{};
+bool SetCursorBool = false;
 NoRecoil::NoRecoil(QWidget *parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
 	QObject::connect(ui.ConfirmButton, SIGNAL(clicked()), this, SLOT(ChangeSpeedButtonClicked()));
+
 }
 
 NoRecoil::~NoRecoil()
-{}
+{
+
+	if (MovingMouseThread.joinable())
+	{
+		StopThread = true;
+		MovingMouseThread.join();
+	}
+}
 
 inline void MoveMouse(double Speed)
 {
-	SetCursorPos(0, -1 * Speed);
+	
+	//GetCursorPos(CursorCoodinates);
+
+	SetCursorBool = SetCursorPos(960, 540+(3 * Speed));
 }
 
 void DetectMouseClick(double Speed)
 {
-	if (GetKeyState(VK_LBUTTON) < 0)
+	while (1)
 	{
-		MoveMouse(Speed);
-	}
+		if (GetKeyState(VK_LBUTTON) & 0x100)
+		{
+			MoveMouse(Speed);
+		}
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-	if (GetKeyState(VK_F1) < 0 || StopThread)
-	{
-		return;
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		//SetCursorPos(0, -3 * Speed);
+		if (GetKeyState(VK_F1) < 0 || StopThread)
+		{
+			return;
+		}
 	}
 }
 void NoRecoil::DetectSpeedChange(double OriginalSpeed)	  //useless in the end, since i dont want to use another thread to overload cpu
@@ -50,15 +66,19 @@ void NoRecoil::DetectSpeedChange(double OriginalSpeed)	  //useless in the end, s
 
 void NoRecoil::ChangeSpeed(double Speed)
 {
-	StopThread = true;
-	MovingMouseThread.join();
-	StopThread = false;
+	if (MovingMouseThread.joinable())
+	{
+		StopThread = true;
+		MovingMouseThread.join();
+		StopThread = false;
+	}
 	MovingMouseThread = std::thread(DetectMouseClick, Speed);
 }
 unsigned int NoRecoil::ChangeSpeedButtonClicked()
 {
 	double Speed = ui.SpeedField->text().toDouble();
-	
+	ChangeSpeed(Speed);
+	return 0;
 	
 	//start thread
 
