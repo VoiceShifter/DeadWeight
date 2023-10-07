@@ -2,13 +2,18 @@
 
 std::atomic<bool> StopThread(false);
 std::thread MovingMouseThread;
+std::thread Checker;
+
 LPPOINT CursorCoodinates{};
 bool SetCursorBool = false;
+
+
 NoRecoil::NoRecoil(QWidget *parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
 	QObject::connect(ui.ConfirmButton, SIGNAL(clicked()), this, SLOT(ChangeSpeedButtonClicked()));
+      
 
 }
 
@@ -20,6 +25,7 @@ NoRecoil::~NoRecoil()
 		StopThread = true;
 		MovingMouseThread.join();
 	}
+      
 }
 
 inline void MoveMouse(double Speed)
@@ -27,17 +33,25 @@ inline void MoveMouse(double Speed)
 	
 	//GetCursorPos(CursorCoodinates);
 
-	SetCursorBool = SetCursorPos(960, 540+(3 * Speed));
+	SetCursorBool = SetCursorPos(960, 540+(1.5 + Speed));
+      
 }
 
 void DetectMouseClick(double Speed)
 {
+
+      unsigned int Offset{0};
 	while (1)
 	{
 		if (GetKeyState(VK_LBUTTON) & 0x100)
 		{
-			MoveMouse(Speed);
+			MoveMouse(Offset);
+                  Offset += Speed;
 		}
+            else
+            {
+                  Offset = 0;
+            }
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		//SetCursorPos(0, -3 * Speed);
@@ -72,15 +86,23 @@ void NoRecoil::ChangeSpeed(double Speed)
 		MovingMouseThread.join();
 		StopThread = false;
 	}
-	MovingMouseThread = std::thread(DetectMouseClick, Speed);
+	MovingMouseThread = std::thread(DetectMouseClick, Speed);      
 }
+
+void NoRecoil::CheckerFunction()
+{
+      while (1)
+      {
+            if (GetKeyState(VK_F1) < 0)
+            {
+                  
+            }
+      }
+      
+};
 unsigned int NoRecoil::ChangeSpeedButtonClicked()
 {
 	double Speed = ui.SpeedField->text().toDouble();
 	ChangeSpeed(Speed);
 	return 0;
-	
-	//start thread
-
-
 }

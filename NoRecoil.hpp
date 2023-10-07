@@ -7,6 +7,7 @@
 # include <thread>
 # include <chrono>
 
+
 class NoRecoil : public QMainWindow
 {
     Q_OBJECT
