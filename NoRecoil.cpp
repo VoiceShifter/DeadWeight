@@ -1,6 +1,6 @@
 # include "NoRecoil.hpp"
 
-std::atomic<bool> StopThread(false);
+std::atomic<bool> StopThread(false), StopCheckerThread(false);
 std::thread MovingMouseThread;
 std::thread Checker;
 
@@ -89,20 +89,42 @@ void NoRecoil::ChangeSpeed(double Speed)
 	MovingMouseThread = std::thread(DetectMouseClick, Speed);      
 }
 
-void NoRecoil::CheckerFunction()
+void CheckerFunction(double Speed)
 {
+      
       while (1)
       {
-            if (GetKeyState(VK_F1) < 0)
+            if (GetKeyState(VK_F1) < 0 || GetKeyState(VK_F1) & 0x100)
             {
-                  
+                  if (MovingMouseThread.joinable())
+                  {
+                        StopThread = true;
+                        MovingMouseThread.join();
+                        StopThread = false;
+                  }
+                  else
+                  {                        
+                        MovingMouseThread = std::thread(DetectMouseClick, Speed);
+                  }
             }
+            
+            if (StopCheckerThread)
+            {
+                  return;
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
       }
       
 };
 unsigned int NoRecoil::ChangeSpeedButtonClicked()
 {
 	double Speed = ui.SpeedField->text().toDouble();
-	ChangeSpeed(Speed);
+      if (Checker.joinable())
+      {
+            StopCheckerThread = 1;
+            Checker.join();
+            StopCheckerThread = 0;
+      }
+      Checker = std::thread(CheckerFunction, Speed);
 	return 0;
 }

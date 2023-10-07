@@ -19,7 +19,6 @@ public:
 	
 	void ChangeSpeed(double);
 	
-	
 
 private:
     Ui::NoRecoilClass ui;
@@ -28,4 +27,6 @@ public slots:
 	unsigned int ChangeSpeedButtonClicked();
 };
 
+void CheckerFunction(double);
 void MoveMouse(double);
+
