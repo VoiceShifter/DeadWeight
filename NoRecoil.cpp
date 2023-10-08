@@ -23,7 +23,6 @@ NoRecoil::NoRecoil(QWidget *parent)
 
 NoRecoil::~NoRecoil()
 {
-
 	if (MovingMouseThread.joinable())
 	{
 		StopThread = true;
@@ -38,14 +37,6 @@ NoRecoil::~NoRecoil()
       
 }
 
-inline void MoveMouse(unsigned int Speed)
-{
-	
-	
-
-	SetCursorBool = SetCursorPos(960, 540+(1.5 + Speed));
-      
-}
 
 void DetectMouseClick(unsigned int Speed)
 {
@@ -69,40 +60,14 @@ void DetectMouseClick(unsigned int Speed)
                   Offset = 0;
             }
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(25));		
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));		
 		if (GetKeyState(VK_INSERT) < 0 || StopThread)
 		{
 			return;
 		}
 	}
 }
-void NoRecoil::DetectSpeedChange(unsigned int OriginalSpeed)	  //useless in the end, since i dont want to use another thread to overload cpu
-{
-	double Speed = ui.SpeedField->text().toDouble();
-	if (Speed != OriginalSpeed)
-	{
-		StopThread = true;
-		MovingMouseThread.join();
-		StopThread = false;
-		MovingMouseThread = std::thread(DetectMouseClick, Speed);
-	}
-	else
-	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(200));
-	}
 
-}
-
-void NoRecoil::ChangeSpeed(unsigned int Speed)
-{
-	if (MovingMouseThread.joinable())
-	{
-		StopThread = true;
-		MovingMouseThread.join();
-		StopThread = false;
-	}
-	MovingMouseThread = std::thread(DetectMouseClick, Speed);      
-}
 
 void CheckerFunction(unsigned int Speed)
 {
