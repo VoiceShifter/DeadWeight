@@ -4,8 +4,8 @@ std::atomic<bool> StopThread(false), StopCheckerThread(false);
 std::thread MovingMouseThread;
 std::thread Checker;
 
-# define ConverseX 34.1333333
-# define ConverseY 60.6814814
+# define ConverseX 34.1505992
+# define ConverseY 60.7367933
 POINT CursorCoodinates{};
 bool SetCursorBool = false;
 
@@ -40,31 +40,33 @@ NoRecoil::~NoRecoil()
 
 void DetectMouseClick(unsigned int Speed)
 {
-      unsigned int Offset{ 0 };
       unsigned int xCoordinate{}, yCoordinate{};      
-      
+      INPUT Mouse_Input{};
 	while (1)
 	{
-            //if (true)
 		if (GetKeyState(VK_LBUTTON) & 0x100)            
 		{
+
                   GetCursorPos(&CursorCoodinates);
                   xCoordinate = int(65535.0 / 1919 * CursorCoodinates.x); //+ 170
                   yCoordinate = int(65535.0 / 1079 * int(CursorCoodinates.y) + Speed * ConverseY); //- 1
-                  mouse_event(MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE, xCoordinate, yCoordinate, 0, 0);
-                  //MoveMouse(Offset);
-                  //Offset += Speed;
+                  //mouse_event(MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE, xCoordinate, yCoordinate, 0, 0);
+                  Mouse_Input.type = INPUT_MOUSE;
+                  Mouse_Input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE;
+                  Mouse_Input.mi.dx = xCoordinate;
+                  Mouse_Input.mi.dy = yCoordinate;
+                  SendInput(1, &Mouse_Input, sizeof(Mouse_Input));
+
+                  
 		}
-            else
+            
+
+            if (StopThread == true)
             {
-                  Offset = 0;
+                  return;
             }
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));		
-		if (GetKeyState(VK_INSERT) < 0 || StopThread)
-		{
-			return;
-		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(25));		
 	}
 }
 
@@ -81,10 +83,12 @@ void CheckerFunction(unsigned int Speed)
                         StopThread = true;
                         MovingMouseThread.join();
                         StopThread = false;
+                        std::this_thread::sleep_for(std::chrono::milliseconds(500));
                   }
                   else
                   {                        
                         MovingMouseThread = std::thread(DetectMouseClick, Speed);
+                        std::this_thread::sleep_for(std::chrono::milliseconds(500));
                   }
             }
             
@@ -92,7 +96,7 @@ void CheckerFunction(unsigned int Speed)
             {
                   return;
             }
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            std::this_thread::sleep_for(std::chrono::milliseconds(25));
       }
       
 };
