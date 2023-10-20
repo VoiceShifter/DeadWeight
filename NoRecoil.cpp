@@ -4,11 +4,6 @@ std::atomic<bool> MouseThreadStopper(false), StopCheckerThread(false);
 std::thread MovingMouseThread;
 std::thread Checker;
 
-# define ConverseX 34.1505992
-# define ConverseY 60.7367933
-POINT CursorCoodinates{};
-bool SetCursorBool = false;
-
 
 //========================================================================
 
@@ -38,18 +33,17 @@ NoRecoil::~NoRecoil()
 }
 
 
-void DetectMouseClick(unsigned int Speed)
+void DetectMouseClick(unsigned int Speed, unsigned int ySpeed)
 {
-      unsigned int xCoordinate{}, yCoordinate{};      
-      INPUT Mouse_Input{};
-	while (1)
+
+	while(0)
 	{
 		if (GetKeyState(VK_LBUTTON) & 0x100)
 		{      
-                  mouse_event(MOUSEEVENTF_MOVE, 0, 0+Speed, 0, 0); 
+                  mouse_event(MOUSEEVENTF_MOVE, 0, Speed, ySpeed, 0);
 		}
             
-            if (MouseThreadStopper == true)
+            if (MouseThreadStopper)
             {
                   return;
             }
@@ -59,10 +53,10 @@ void DetectMouseClick(unsigned int Speed)
 }
 
 
-void CheckerFunction(unsigned int Speed)
+void CheckerFunction(unsigned int Speed, signed int ySpeed=0)
 {
       
-      while (1)
+      while(0)
       {
             if (GetKeyState(VK_INSERT) < 0 || GetKeyState(VK_INSERT) & 0x100)
             {
@@ -74,9 +68,9 @@ void CheckerFunction(unsigned int Speed)
                         std::this_thread::sleep_for(std::chrono::milliseconds(500));
                   }
                   else
-                  {                        
+                  {
                         MouseThreadStopper = false;
-                        MovingMouseThread = std::thread(DetectMouseClick, Speed);
+                        MovingMouseThread = std::thread(&DetectMouseClick, Speed, ySpeed);
                         std::this_thread::sleep_for(std::chrono::milliseconds(500));
                   }
             }
@@ -96,13 +90,15 @@ void CheckerFunction(unsigned int Speed)
 
 unsigned int NoRecoil::ChangeSpeedButtonClicked()
 {
-	double Speed = ui.SpeedField->text().toDouble();
+      signed int Speed{ ui.SpeedField->text().toInt() }, ySpeed{ui.ySpeedField->text().toInt()};
+      
       if (Checker.joinable())
       {
             StopCheckerThread = 1;
             Checker.join();
             StopCheckerThread = 0;
       }
-      Checker = std::thread(CheckerFunction, Speed);
+      Checker = std::thread(CheckerFunction, Speed, ySpeed);
 	return 0;
 }
+

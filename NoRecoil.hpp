@@ -7,6 +7,21 @@
 # include <thread>
 # include <chrono>
 
+namespace MyKeys 
+{
+      enum Keys
+      {
+            LMBUTTON = 1,
+            RMBUTTON,           
+            MBUTTON = 4,
+            MXBUTTON1,
+            MXBUTTON2,
+            CAPS = 18
+      };
+}
+
+
+
 
 class NoRecoil : public QMainWindow
 {
@@ -25,8 +40,9 @@ private:
 
 public slots:
 	unsigned int ChangeSpeedButtonClicked();
+      //signed int SwithForKey();
 };
 
-void CheckerFunction(unsigned int);
-void MoveMouse(unsigned int);
+void CheckerFunction(unsigned int, signed int);
+
 
