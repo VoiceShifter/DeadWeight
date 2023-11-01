@@ -18,6 +18,19 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
+       <widget class="QLabel" name="label_2">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Moving by Y axis</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLineEdit" name="SpeedField">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -26,6 +39,22 @@
          </sizepolicy>
         </property>
        </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Moving by X axis</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="ySpeedField"/>
       </item>
       <item>
        <widget class="QPushButton" name="ConfirmButton">
@@ -44,7 +73,21 @@
          </font>
         </property>
         <property name="text">
-         <string>INSERT after confirming speed to toggle </string>
+         <string>1 after confirming speed to toggle</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>2 - 5 to turn off </string>
         </property>
        </widget>
       </item>

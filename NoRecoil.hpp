@@ -15,9 +15,9 @@ class NoRecoil : public QMainWindow
 public:
     NoRecoil(QWidget *parent = nullptr);
     ~NoRecoil();
-	void DetectSpeedChange(unsigned int);
 	
-	void ChangeSpeed(unsigned int);
+	
+	
 	
 
 private:
@@ -27,6 +27,6 @@ public slots:
 	unsigned int ChangeSpeedButtonClicked();
 };
 
-void CheckerFunction(unsigned int);
-void MoveMouse(unsigned int);
+void CheckerFunction(unsigned int, signed int);
+
 
