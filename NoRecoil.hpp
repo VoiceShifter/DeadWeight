@@ -30,9 +30,9 @@ class NoRecoil : public QMainWindow
 public:
     NoRecoil(QWidget *parent = nullptr);
     ~NoRecoil();
-	void DetectSpeedChange(unsigned int);
 	
-	void ChangeSpeed(unsigned int);
+	
+	
 	
 
 private:
