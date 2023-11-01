@@ -79,7 +79,7 @@ void CheckerFunction(unsigned int Speed, signed int ySpeed = 0)
                         std::this_thread::sleep_for(std::chrono::milliseconds(500));
                   }
             }
-            else if (GetKeyState(0x32) < 0 || GetKeyState(0x33) < 0 || GetKeyState(0x34) < 0 || GetKeyState(0x35) < 0)
+            else if (GetKeyState(0x32) < 0 || GetKeyState(0x34) < 0 || GetKeyState(0x35) < 0)
             {
                   if (MovingMouseThread.joinable())
                   {
